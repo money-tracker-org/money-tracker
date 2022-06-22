@@ -3,16 +3,18 @@ import { User } from "./entity/User";
 import { Transaction } from "./entity/Transaction";
 import { Payment } from "./entity/Payment";
 import { Request, Response } from "express";
-import { TransactionDTO } from "./dto/transactionDTO";
-import { PaymentDTO } from "./dto/paymentDTO";
+import { TransactionDTO } from "../../shared/dto/transactionDTO";
+import { PaymentDTO } from "../../shared/dto/paymentDTO";
 import { UsingJoinColumnOnlyOnOneSideAllowedError } from "typeorm";
+import * as cors from "cors";
 
 AppDataSource.initialize()
   .then(async () => {
     const express = require("express");
     const app = express();
     app.use(express.json());
-    const port = 3000;
+    app.use(cors({ methods: ["GET", "POST", "PUT"] }));
+    const port = 3001;
 
     app.post("/user", async (req: Request, res: Response) => {
       console.log("Inserting a new user into the database...");
@@ -20,7 +22,14 @@ AppDataSource.initialize()
       user.firstName = req.body.firstName;
       user.lastName = req.body.lastName;
       await AppDataSource.manager.save(user);
-      console.log("Inserted a new user into the database with id " + user.id);
+      console.log(
+        "Inserted a new user into the database with id " +
+          user.id +
+          "First name: " +
+          user.firstName +
+          "Last name: " +
+          user.lastName
+      );
       res.json(user);
     });
 
@@ -43,26 +52,6 @@ AppDataSource.initialize()
       );
       transaction.payments = await Promise.all(paymentPromises);
       await AppDataSource.manager.save(transaction);
-      // payload.payments.map(async (x: PaymentDTO) => {
-      //   const payment = new Payment();
-      //   payment.transaction = transaction;
-      //   payment.user = await AppDataSource.manager.findOneBy(User, {
-      //     id: x.userId,
-      //   });
-      //   payment.amountInEur = x.amountInEur;
-      //   AppDataSource.manager.save(payment);
-
-      //   console.log(
-      //     "Inserted a new payment into the database with id " +
-      //       payment.id +
-      //       ", user: " +
-      //       JSON.stringify(payment.user) +
-      //       ", amount in EUR: " +
-      //       payment.amountInEur +
-      //       ", Associated transaction: " +
-      //       JSON.stringify(payment.transaction)
-      //   );
-      // });
 
       console.log(
         "Inserted a new transaction into the database with id " + transaction.id

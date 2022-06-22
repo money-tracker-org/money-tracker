@@ -1,12 +1,16 @@
-import React from 'react';
-import './App.css';
-import TransactionList from './components/TransactionList';
-
+import React from "react";
+import "./App.css";
+import TransactionList from "./components/TransactionList";
+import CreateNewUser from "./components/CreateNewUser";
+import CreateTransactionForm from "./components/CreateTransactionForm";
 
 function App() {
   return (
-    
-    <TransactionList/>
+    <>
+      <CreateNewUser />
+      <CreateTransactionForm />
+      <TransactionList />
+    </>
   );
 }
 
