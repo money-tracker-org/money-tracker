@@ -1,31 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Payment } from '../../lib/entity/Payment';
 import { useAppDispatch, useAppSelector } from '../../pages/store';
 import { fetchUsersIfNotFound, userListSelector } from '../user/userSlice';
-import styles from './NewTransactionForm.module.css';
+import { PaymentCardPayInput } from './PaymentCardPayInput';
 import { createNewTransaction, transactionFormEqualPaymentChange, transactionFormFieldChange, transactionFormItemSelector } from './transactionFormSlice';
 
-
-
-const renderPaymentCardPay = (payment: Payment, equalSplit: boolean, onValueChange: (val: string) => void) => {
-    const displayValue = payment.amountInEur.toFixed(2).length <= payment.amountInEur.toString(10).length ? payment.amountInEur.toFixed(2) : payment.amountInEur.toString(10)
-    return (
-        <article className={styles.usercard}>
-            <kbd>{payment.user.firstName} {payment.user.lastName}</kbd>
-            <span>
-                <input
-                    className={styles.paymentCardAmountInput}
-                    type="number"
-                    placeholder="€"
-                    name="amount"
-                    disabled={equalSplit}
-                    value={displayValue}
-                    onChange={e => onValueChange(e.target.value)}
-                />
-            </span>
-        </article>
-    )
-}
 
 export const NewTransactionForm = () => {
     const dispatch = useAppDispatch()
@@ -49,13 +27,10 @@ export const NewTransactionForm = () => {
 
     const totalAmountChanged = (newTotalAmountString: string) => {
         // TODO maybe limit the precision
-        const newTotalAmount = newTotalAmountString === "" ? 0 : parseFloat(newTotalAmountString)
-        if (newTotalAmountString === "") {
-            setTotalAmount(newTotalAmountString)
-        } else {
-            setTotalAmount(newTotalAmount)
-        }
-        dispatch(transactionFormEqualPaymentChange({ totalAmount: newTotalAmount, users }))
+        const displayTotalAmount = !!newTotalAmountString ? parseFloat(newTotalAmountString) : ""
+        setTotalAmount(displayTotalAmount)
+        const valueTotalAmount = !!newTotalAmountString ? parseFloat(newTotalAmountString) : 0
+        dispatch(transactionFormEqualPaymentChange({ totalAmount: valueTotalAmount, users }))
     }
 
     useEffect(() => {
@@ -72,7 +47,7 @@ export const NewTransactionForm = () => {
             amount: !!totalAmount,
         }
         let formValid = true;
-        Object.entries(newFieldsValid).forEach((e) => { formValid = formValid && e[1] })
+        Object.entries(newFieldsValid).forEach(([property, value]) => { formValid = formValid && value })
         setFieldsValid(newFieldsValid)
         if (formValid) {
             dispatch(createNewTransaction(transactionFormContent.formTransaction))
@@ -128,7 +103,10 @@ export const NewTransactionForm = () => {
                 </label>
             </fieldset>
             <div>
-                {!!transactionFormContent.formTransaction.payments && transactionFormContent.formTransaction.payments.map(p => renderPaymentCardPay(p, useEqualSplit, (e) => { }))}
+                {!!transactionFormContent.formTransaction.payments
+                    && transactionFormContent.formTransaction.payments.map(p => (
+                        <PaymentCardPayInput payment={p} equalSplit={useEqualSplit} onValueChange={() => false} />
+                    ))}
             </div>
             <div>
                 <button

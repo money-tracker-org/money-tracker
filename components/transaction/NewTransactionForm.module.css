@@ -7,8 +7,3 @@
     justify-content: space-between;
     align-items: center;
 }
-
-input.paymentCardAmountInput {
-    max-width: 10em;
-    margin-bottom: 0px;
-}
