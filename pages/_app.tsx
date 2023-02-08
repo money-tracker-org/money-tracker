@@ -3,6 +3,7 @@ import "reflect-metadata"
 import '@picocss/pico'
 import { AppProps } from 'next/app'
 import Head from 'next/head'
+import { useEffect } from 'react'
 import { Provider } from "react-redux"
 import { Header } from "../components/header/Header"
 import { setBackendUrl, store } from './store'
@@ -13,8 +14,11 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         if (store.getState().global.backendUrl !== currentHost) {
             store.dispatch(setBackendUrl(currentHost))
         }
-        // store.dispatch(setBackendUrl())
     }
+    useEffect(() => {
+        Notification.requestPermission()
+    }, [])
+
     return (
         <>
             <Head>
