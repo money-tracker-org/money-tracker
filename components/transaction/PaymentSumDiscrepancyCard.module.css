@@ -1,0 +1,11 @@
+.balanced {
+    color: var(--ins-color);
+}
+
+.unbalanced {
+    color: var(--del-color);
+}
+
+.card {
+    margin: 12px
+}

@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
+import { Payment } from '../../lib/entity/Payment';
 import { useAppDispatch, useAppSelector } from '../../pages/store';
 import { fetchUsersIfNotFound, userListSelector } from '../user/userSlice';
 import { PaymentCardPayInput } from './PaymentCardPayInput';
-import { createNewTransaction, transactionFormEqualPaymentChange, transactionFormFieldChange, transactionFormItemSelector } from './transactionFormSlice';
+import { PaymentSumDiscrepancyCard } from './PaymentSumDiscrepancyCard';
+import { createNewTransaction, transactionFormEqualSplitAmountChange, transactionFormFieldChange, transactionFormItemSelector, transactionFormUnequalAmountChange, transactionFormUnequalPaymentChange } from './transactionFormSlice';
 
 
 export const NewTransactionForm = () => {
@@ -30,15 +32,16 @@ export const NewTransactionForm = () => {
         const displayTotalAmount = !!newTotalAmountString ? parseFloat(newTotalAmountString) : ""
         setTotalAmount(displayTotalAmount)
         const valueTotalAmount = !!newTotalAmountString ? parseFloat(newTotalAmountString) : 0
-        dispatch(transactionFormEqualPaymentChange({ totalAmount: valueTotalAmount, users }))
+        if (useEqualSplit) {
+            dispatch(transactionFormEqualSplitAmountChange({ totalAmount: valueTotalAmount, users }))
+        } else {
+            dispatch(transactionFormUnequalAmountChange({ totalAmount: valueTotalAmount, users }))
+        }
     }
 
     useEffect(() => {
-        if (users.length > 0 && transactionFormContent.formTransaction.payments === undefined) {
-            const initialTotalAmount = typeof totalAmount === "string" ? 0 : totalAmount
-            dispatch(transactionFormEqualPaymentChange({ totalAmount: initialTotalAmount, users }))
-        }
-    }, [users, transactionFormContent.formTransaction.payments])
+        totalAmountChanged(totalAmount.toString())
+    }, [useEqualSplit])
 
     const onFormSubmit = () => {
         const newFieldsValid = {
@@ -54,6 +57,12 @@ export const NewTransactionForm = () => {
         }
     }
 
+    const onPayInputEdit = (payment: Payment, value: string) => {
+        const newValue = Number.isNaN(parseFloat(value)) ? 0 : parseFloat(value)
+        const totalAmountValue = Number.isNaN(parseFloat(totalAmount.toString())) ? 0 : parseFloat(totalAmount.toString())
+        dispatch(transactionFormUnequalPaymentChange({ payment: payment, newPaymentValue: newValue, users: users, totalAmount: totalAmountValue }));
+    }
+    const currentPaymentSum = transactionFormContent.formTransaction.payments?.map(p => p.amountInEur).reduce((a, b) => a + b, 0)
     return (
         <form onSubmit={e => e.preventDefault()}>
             <div>
@@ -91,21 +100,24 @@ export const NewTransactionForm = () => {
             </div>
             <fieldset>
                 <label htmlFor="useEqualPaySwitch">
-                    <input
-                        type="checkbox"
-                        id="useEqualPaySwitch"
-                        name="useEqualPaySwitch"
-                        role="switch"
-                        checked={useEqualSplit}
-                        onChange={_ => setUseEqualSplit(!useEqualSplit)}
-                    />
-                    Split equally
+                    <span>
+                        <input
+                            type="checkbox"
+                            id="useEqualPaySwitch"
+                            name="useEqualPaySwitch"
+                            role="switch"
+                            checked={useEqualSplit}
+                            onChange={_ => setUseEqualSplit(!useEqualSplit)}
+                        />
+                        Split equally
+                    </span>
+                    {!useEqualSplit && <PaymentSumDiscrepancyCard totalAmount={totalAmount} transactionPaymentSum={currentPaymentSum} />}
                 </label>
             </fieldset>
             <div>
                 {!!transactionFormContent.formTransaction.payments
                     && transactionFormContent.formTransaction.payments.map(p => (
-                        <PaymentCardPayInput payment={p} equalSplit={useEqualSplit} onValueChange={() => false} />
+                        <PaymentCardPayInput payment={p} equalSplit={useEqualSplit} onValueChange={(v) => onPayInputEdit(p, v)} />
                     ))}
             </div>
             <div>
