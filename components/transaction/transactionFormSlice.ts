@@ -6,8 +6,16 @@ import { User } from '../../lib/entity/User';
 import { AppDispatch, AppGetState, RootState } from '../../pages/store';
 import * as transactionSlice from './transactionSlice';
 
+type TransactionFormPayment = Payment & Partial<Payment> & {
+    editedManually?: boolean
+}
+
+interface TransactionFormTransaction extends Partial<Transaction> {
+    payments?: TransactionFormPayment[]
+}
+
 export type TransactionFormState = {
-    formTransaction: Partial<Transaction>
+    formTransaction: TransactionFormTransaction
     loading: boolean
     error?: Error
 }
@@ -21,9 +29,25 @@ const initialState: TransactionFormState = {
     loading: false,
 }
 
-export interface EqualPaymentChange {
+export interface AmountChange {
     totalAmount: number,
     users: User[]
+}
+
+export interface UnequalPaymentChange {
+    totalAmount: number,
+    users: User[]
+    payment: Payment,
+    newPaymentValue: number
+}
+
+const makeDefaultPaymentsForUsers = (totalAmount: number, users: User[]) => {
+    const onePart = totalAmount / users.length
+    return users.map((u, idx) => ({
+        amountInEur: onePart,
+        user: u,
+        id: idx
+    })) as TransactionFormPayment[]
 }
 
 export const transactionFormSlice = createSlice({
@@ -33,12 +57,50 @@ export const transactionFormSlice = createSlice({
         transactionFormFieldChange: (state, action: PayloadAction<Partial<Transaction>>) => {
             Object.assign(state.formTransaction, action.payload)
         },
-        transactionFormEqualPaymentChange: (state, action: PayloadAction<EqualPaymentChange>) => {
+        transactionFormEqualSplitAmountChange: (state, action: PayloadAction<AmountChange>) => {
+            const payments: Payment[] = makeDefaultPaymentsForUsers(action.payload.totalAmount, action.payload.users)
+            state.formTransaction.payments = payments
+        },
+        transactionFormUnequalAmountChange: (state, action: PayloadAction<AmountChange>) => {
             const onePart = action.payload.totalAmount / action.payload.users.length
-            const payments: Payment[] = action.payload.users.map(u => ({
-                amountInEur: onePart,
-                user: u
-            })) as Payment[]
+            if (state.formTransaction.payments === undefined || state.formTransaction.payments?.length === 0) {
+                state.formTransaction.payments = makeDefaultPaymentsForUsers(action.payload.totalAmount, action.payload.users)
+            }
+            const payments: TransactionFormPayment[] = state.formTransaction.payments
+            for (var p of payments) {
+                if (!p.editedManually) {
+                    p.amountInEur = onePart
+                }
+            }
+            state.formTransaction.payments = payments
+        },
+        transactionFormUnequalPaymentChange: (state, action: PayloadAction<UnequalPaymentChange>) => {
+            if (state.formTransaction.payments === undefined) {
+                state.formTransaction.payments = makeDefaultPaymentsForUsers(action.payload.totalAmount, action.payload.users)
+            }
+            // get the sum of manually set fields (we want to rebalance the unset fields)
+            const manuallySetSum = state.formTransaction.payments
+                .filter(p => !!p.editedManually)
+                .filter(p => p.id !== action.payload.payment.id)
+                .map(p => p.amountInEur)
+                .reduce((a, b) => a + b, 0) + action.payload.newPaymentValue
+
+            const notManuallySetPaymentCount = state.formTransaction.payments
+                .filter(p => !p.editedManually)
+                .filter(p => p.id !== action.payload.payment.id).length
+
+            const onePart = (action.payload.totalAmount - manuallySetSum) / notManuallySetPaymentCount
+
+
+            const payments: TransactionFormPayment[] = state.formTransaction.payments.map(p => {
+                if (p.id === action.payload.payment.id) {
+                    p.amountInEur = action.payload.newPaymentValue
+                    p.editedManually = true
+                } else if (!p.editedManually) {
+                    p.amountInEur = Math.max(0, onePart)
+                }
+                return p
+            })
             state.formTransaction.payments = payments
         },
         createNewTransactionStarted: (state) => {
@@ -71,6 +133,6 @@ export const createNewTransaction = (transaction: Partial<Transaction>) => async
 
 export const transactionFormItemSelector = (state: RootState) => state.transactionForm
 
-export const { transactionFormFieldChange, transactionFormEqualPaymentChange } = transactionFormSlice.actions
+export const { transactionFormFieldChange, transactionFormEqualSplitAmountChange, transactionFormUnequalAmountChange, transactionFormUnequalPaymentChange } = transactionFormSlice.actions
 
 export default transactionFormSlice.reducer
