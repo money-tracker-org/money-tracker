@@ -1,16 +1,18 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
+import { evaluateArithmeticExpressionSafe } from '../../lib/arithmetic/arithmetic';
 import { Payment } from '../../lib/entity/Payment';
 import { Transaction } from '../../lib/entity/Transaction';
 import { User } from '../../lib/entity/User';
 import { AppDispatch, AppGetState, RootState } from '../../pages/store';
 import * as transactionSlice from './transactionSlice';
 
-type TransactionFormPayment = Payment & Partial<Payment> & {
+export type TransactionFormPayment = Payment & Partial<Payment> & {
     editedManually?: boolean
+    rawPaymentInput?: string
 }
 
-interface TransactionFormTransaction extends Partial<Transaction> {
+export interface TransactionFormTransaction extends Partial<Transaction> {
     payments?: TransactionFormPayment[]
 }
 
@@ -38,7 +40,7 @@ export interface UnequalPaymentChange {
     totalAmount: number,
     users: User[]
     payment: Payment,
-    newPaymentValue: number
+    newPayment: string
 }
 
 const makeDefaultPaymentsForUsers = (totalAmount: number, users: User[]) => {
@@ -46,7 +48,8 @@ const makeDefaultPaymentsForUsers = (totalAmount: number, users: User[]) => {
     return users.map((u, idx) => ({
         amountInEur: onePart,
         user: u,
-        id: idx
+        id: idx,
+        rawPaymentInput: onePart.toString()
     })) as TransactionFormPayment[]
 }
 
@@ -70,6 +73,7 @@ export const transactionFormSlice = createSlice({
             for (var p of payments) {
                 if (!p.editedManually) {
                     p.amountInEur = onePart
+                    p.rawPaymentInput = onePart.toString()
                 }
             }
             state.formTransaction.payments = payments
@@ -78,12 +82,24 @@ export const transactionFormSlice = createSlice({
             if (state.formTransaction.payments === undefined) {
                 state.formTransaction.payments = makeDefaultPaymentsForUsers(action.payload.totalAmount, action.payload.users)
             }
+
+            const newPaymentValue = evaluateArithmeticExpressionSafe(action.payload.newPayment)
+            if (newPaymentValue === undefined) {
+                // if the expression in the payment field is invalid, we want to set the rawPaymentInput but not anything else..
+                state.formTransaction.payments = state.formTransaction.payments.map(p => {
+                    if (p.id === action.payload.payment.id) {
+                        p.rawPaymentInput = action.payload.newPayment
+                    }
+                    return p
+                })
+                return
+            }
             // get the sum of manually set fields (we want to rebalance the unset fields)
             const manuallySetSum = state.formTransaction.payments
                 .filter(p => !!p.editedManually)
                 .filter(p => p.id !== action.payload.payment.id)
                 .map(p => p.amountInEur)
-                .reduce((a, b) => a + b, 0) + action.payload.newPaymentValue
+                .reduce((a, b) => a + b, 0) + newPaymentValue
 
             const notManuallySetPaymentCount = state.formTransaction.payments
                 .filter(p => !p.editedManually)
@@ -94,10 +110,12 @@ export const transactionFormSlice = createSlice({
 
             const payments: TransactionFormPayment[] = state.formTransaction.payments.map(p => {
                 if (p.id === action.payload.payment.id) {
-                    p.amountInEur = action.payload.newPaymentValue
+                    p.amountInEur = newPaymentValue
+                    p.rawPaymentInput = action.payload.newPayment
                     p.editedManually = true
                 } else if (!p.editedManually) {
                     p.amountInEur = Math.max(0, onePart)
+                    p.rawPaymentInput = Math.max(0, onePart).toString()
                 }
                 return p
             })

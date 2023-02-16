@@ -1,12 +1,13 @@
+import { evaluateArithmeticExpressionSafe } from "../../lib/arithmetic/arithmetic"
 import styles from "./PaymentSumDiscrepancyCard.module.css"
 
 export interface PaymentSumDiscrepancyCardProps {
-    totalAmount: number | string
+    totalAmount: string
     transactionPaymentSum: number | undefined
 }
 
 export const PaymentSumDiscrepancyCard = ({ totalAmount, transactionPaymentSum }: PaymentSumDiscrepancyCardProps) => {
-    const totalAmountValue = typeof totalAmount === "string" ? 0 : totalAmount
+    const totalAmountValue = evaluateArithmeticExpressionSafe(totalAmount) || 0
     const totalAmountString = totalAmountValue.toFixed(2)
     const paymentSum = typeof transactionPaymentSum === "number" ? transactionPaymentSum : 0
     const paymentSumString = paymentSum.toFixed(2)
