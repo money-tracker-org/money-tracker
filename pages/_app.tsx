@@ -1,6 +1,7 @@
 import "reflect-metadata"
 
 import '@picocss/pico'
+import { SessionProvider } from "next-auth/react"
 import { AppProps } from 'next/app'
 import Head from 'next/head'
 import { useEffect } from 'react'
@@ -8,7 +9,10 @@ import { Provider } from "react-redux"
 import { Header } from "../components/header/Header"
 import { setBackendUrl, store } from './store'
 
-export default function MyApp({ Component, pageProps }: AppProps) {
+export default function MyApp({
+    Component,
+    pageProps: { session, ...pageProps },
+}: AppProps) {
     if (typeof window !== "undefined") {
         const currentHost = `${window.location.protocol}//${window.location.host}`
         if (store.getState().global.backendUrl !== currentHost) {
@@ -48,10 +52,12 @@ export default function MyApp({ Component, pageProps }: AppProps) {
                 <link rel="apple-touch-icon" href="/apple-icon.png"></link>
                 <meta name="theme-color" content="#317EFB" />
             </Head>
-            <Provider store={store}>
-                <Header></Header>
-                <Component {...pageProps} />
-            </Provider>
+            <SessionProvider session={session}>
+                <Provider store={store}>
+                    <Header></Header>
+                    <Component {...pageProps} />
+                </Provider>
+            </SessionProvider>
         </>
     )
 }

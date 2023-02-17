@@ -1,5 +1,6 @@
 
 import Link from 'next/link'
+import { LoginControlCard } from '../login/LoginControlCard'
 
 export const Header = () => {
     return (
@@ -16,6 +17,9 @@ export const Header = () => {
                     </li>
                     <li>
                         <Link href="/transaction">Transaction</Link>
+                    </li>
+                    <li>
+                        <LoginControlCard />
                     </li>
                 </ul>
             </nav>
