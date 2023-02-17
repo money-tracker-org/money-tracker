@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { evaluateArithmeticExpressionSafe } from '../../lib/arithmetic/arithmetic';
 import { Payment } from '../../lib/entity/Payment';
 import { useAppDispatch, useAppSelector } from '../../pages/store';
 import { fetchUsersIfNotFound, userListSelector } from '../user/userSlice';
@@ -19,7 +20,7 @@ export const NewTransactionForm = () => {
         date: true,
         amount: true,
     })
-    const [totalAmount, setTotalAmount] = useState<number | string>("")
+    const [totalAmount, setTotalAmount] = useState<string>("")
     const [useEqualSplit, setUseEqualSplit] = useState(true)
     const transactionFormContent = useAppSelector(transactionFormItemSelector)
 
@@ -28,14 +29,18 @@ export const NewTransactionForm = () => {
     };
 
     const totalAmountChanged = (newTotalAmountString: string) => {
-        // TODO maybe limit the precision
-        const displayTotalAmount = !!newTotalAmountString ? parseFloat(newTotalAmountString) : ""
-        setTotalAmount(displayTotalAmount)
-        const valueTotalAmount = !!newTotalAmountString ? parseFloat(newTotalAmountString) : 0
-        if (useEqualSplit) {
-            dispatch(transactionFormEqualSplitAmountChange({ totalAmount: valueTotalAmount, users }))
+        setTotalAmount(newTotalAmountString)
+        const totalAmountValue = evaluateArithmeticExpressionSafe(newTotalAmountString)
+        if (totalAmountValue === undefined) {
+            setFieldsValid({ ...fieldsValid, amount: false })
+            return; // ignore invalid inputs
         } else {
-            dispatch(transactionFormUnequalAmountChange({ totalAmount: valueTotalAmount, users }))
+            setFieldsValid({ ...fieldsValid, amount: true })
+        }
+        if (useEqualSplit) {
+            dispatch(transactionFormEqualSplitAmountChange({ totalAmount: totalAmountValue, users }))
+        } else {
+            dispatch(transactionFormUnequalAmountChange({ totalAmount: totalAmountValue, users }))
         }
     }
 
@@ -58,9 +63,11 @@ export const NewTransactionForm = () => {
     }
 
     const onPayInputEdit = (payment: Payment, value: string) => {
-        const newValue = Number.isNaN(parseFloat(value)) ? 0 : parseFloat(value)
-        const totalAmountValue = Number.isNaN(parseFloat(totalAmount.toString())) ? 0 : parseFloat(totalAmount.toString())
-        dispatch(transactionFormUnequalPaymentChange({ payment: payment, newPaymentValue: newValue, users: users, totalAmount: totalAmountValue }));
+        const totalAmountValue = evaluateArithmeticExpressionSafe(totalAmount)
+        if (totalAmountValue === undefined) {
+            return
+        }
+        dispatch(transactionFormUnequalPaymentChange({ payment: payment, newPayment: value, users: users, totalAmount: totalAmountValue }));
     }
     const currentPaymentSum = transactionFormContent.formTransaction.payments?.map(p => p.amountInEur).reduce((a, b) => a + b, 0)
     return (
@@ -89,7 +96,7 @@ export const NewTransactionForm = () => {
                     required
                 />
                 <input
-                    type="number"
+                    type="text"
                     placeholder="Amount €"
                     name="amount"
                     value={totalAmount}

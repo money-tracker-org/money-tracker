@@ -1,19 +1,14 @@
 import { useState } from 'react';
-import { Payment } from "../../lib/entity/Payment";
 import styles from './PaymentCardPayInput.module.css';
+import { TransactionFormPayment } from './transactionFormSlice';
 
 interface PaymentCardPayInputProps {
-    payment: Payment
+    payment: TransactionFormPayment
     equalSplit: boolean
     onValueChange: (val: string) => void
 }
 
 export const PaymentCardPayInput = ({ payment, equalSplit, onValueChange }: PaymentCardPayInputProps) => {
-    const fixedPrecisionAmount = payment.amountInEur.toFixed(2)
-    const exactAmount = payment.amountInEur.toString(10)
-    // at max 2 point precision
-    const displayValue = fixedPrecisionAmount.length <= exactAmount.length ? fixedPrecisionAmount : exactAmount
-
 
     const [editedManually, setEditedManually] = useState(false)
     if (editedManually && equalSplit) {
@@ -27,11 +22,11 @@ export const PaymentCardPayInput = ({ payment, equalSplit, onValueChange }: Paym
             <span>
                 <input
                     className={styles.paymentCardAmountInput}
-                    type="number"
+                    type="text"
                     placeholder="€"
                     name="amount"
                     disabled={equalSplit}
-                    value={displayValue}
+                    value={payment.rawPaymentInput}
                     onChange={e => onValueChange(e.target.value)}
                 />
             </span>
