@@ -1,46 +1,65 @@
-import { useEffect, useState } from 'react';
-import { evaluateArithmeticExpressionSafe } from '../../lib/arithmetic/arithmetic';
-import { Payment } from '../../lib/entity/Payment';
-import { useAppDispatch, useAppSelector } from '../../pages/store';
-import { fetchUsersIfNotFound, userListSelector } from '../user/userSlice';
-import { PaymentCardPayInput } from './PaymentCardPayInput';
-import { PaymentSumDiscrepancyCard } from './PaymentSumDiscrepancyCard';
-import { createNewTransaction, transactionFormEqualSplitAmountChange, transactionFormFieldChange, transactionFormItemSelector, transactionFormUnequalAmountChange, transactionFormUnequalPaymentChange } from './transactionFormSlice';
-
+import { useEffect, useState } from 'react'
+import { evaluateArithmeticExpressionSafe } from '../../lib/arithmetic/arithmetic'
+import { Payment } from '../../lib/entity/Payment'
+import { useAppDispatch, useAppSelector } from '../../pages/store'
+import { fetchUsersIfNotFound, userListSelector } from '../user/userSlice'
+import { PaymentCardPayInput } from './PaymentCardPayInput'
+import { PaymentSumDiscrepancyCard } from './PaymentSumDiscrepancyCard'
+import {
+    createNewTransaction,
+    transactionFormEqualSplitAmountChange,
+    transactionFormFieldChange,
+    transactionFormItemSelector,
+    transactionFormUnequalAmountChange,
+    transactionFormUnequalPaymentChange,
+} from './transactionFormSlice'
 
 export const NewTransactionForm = () => {
     const dispatch = useAppDispatch()
-    const usersLoading = useAppSelector(state => state.user.loading)
+    const usersLoading = useAppSelector((state) => state.user.loading)
     const users = useAppSelector(userListSelector)
     useEffect(() => {
         dispatch(fetchUsersIfNotFound())
-    }, []);
+    }, [])
     const [fieldsValid, setFieldsValid] = useState({
         title: true,
         date: true,
         amount: true,
     })
-    const [totalAmount, setTotalAmount] = useState<string>("")
+    const [totalAmount, setTotalAmount] = useState<string>('')
     const [useEqualSplit, setUseEqualSplit] = useState(true)
     const transactionFormContent = useAppSelector(transactionFormItemSelector)
 
     const handleSimpleKeyPress = (e: React.ChangeEvent<HTMLInputElement>) => {
-        dispatch(transactionFormFieldChange({ [e.target.name]: e.target.value }));
-    };
+        dispatch(
+            transactionFormFieldChange({ [e.target.name]: e.target.value })
+        )
+    }
 
     const totalAmountChanged = (newTotalAmountString: string) => {
         setTotalAmount(newTotalAmountString)
-        const totalAmountValue = evaluateArithmeticExpressionSafe(newTotalAmountString)
+        const totalAmountValue =
+            evaluateArithmeticExpressionSafe(newTotalAmountString)
         if (totalAmountValue === undefined) {
             setFieldsValid({ ...fieldsValid, amount: false })
-            return; // ignore invalid inputs
+            return // ignore invalid inputs
         } else {
             setFieldsValid({ ...fieldsValid, amount: true })
         }
         if (useEqualSplit) {
-            dispatch(transactionFormEqualSplitAmountChange({ totalAmount: totalAmountValue, users }))
+            dispatch(
+                transactionFormEqualSplitAmountChange({
+                    totalAmount: totalAmountValue,
+                    users,
+                })
+            )
         } else {
-            dispatch(transactionFormUnequalAmountChange({ totalAmount: totalAmountValue, users }))
+            dispatch(
+                transactionFormUnequalAmountChange({
+                    totalAmount: totalAmountValue,
+                    users,
+                })
+            )
         }
     }
 
@@ -54,11 +73,15 @@ export const NewTransactionForm = () => {
             date: !!transactionFormContent.formTransaction.date,
             amount: !!totalAmount,
         }
-        let formValid = true;
-        Object.entries(newFieldsValid).forEach(([property, value]) => { formValid = formValid && value })
+        let formValid = true
+        Object.entries(newFieldsValid).forEach(([property, value]) => {
+            formValid = formValid && value
+        })
         setFieldsValid(newFieldsValid)
         if (formValid) {
-            dispatch(createNewTransaction(transactionFormContent.formTransaction))
+            dispatch(
+                createNewTransaction(transactionFormContent.formTransaction)
+            )
         }
     }
 
@@ -67,11 +90,20 @@ export const NewTransactionForm = () => {
         if (totalAmountValue === undefined) {
             return
         }
-        dispatch(transactionFormUnequalPaymentChange({ payment: payment, newPayment: value, users: users, totalAmount: totalAmountValue }));
+        dispatch(
+            transactionFormUnequalPaymentChange({
+                payment: payment,
+                newPayment: value,
+                users: users,
+                totalAmount: totalAmountValue,
+            })
+        )
     }
-    const currentPaymentSum = transactionFormContent.formTransaction.payments?.map(p => p.amountInEur).reduce((a, b) => a + b, 0)
+    const currentPaymentSum = transactionFormContent.formTransaction.payments
+        ?.map((p) => p.amountInEur)
+        .reduce((a, b) => a + b, 0)
     return (
-        <form onSubmit={e => e.preventDefault()}>
+        <form onSubmit={(e) => e.preventDefault()}>
             <div>
                 <input
                     type="text"
@@ -100,8 +132,10 @@ export const NewTransactionForm = () => {
                     placeholder="Amount €"
                     name="amount"
                     value={totalAmount}
-                    onChange={e => totalAmountChanged(e.target.value)}
-                    aria-invalid={fieldsValid.amount === true ? undefined : true}
+                    onChange={(e) => totalAmountChanged(e.target.value)}
+                    aria-invalid={
+                        fieldsValid.amount === true ? undefined : true
+                    }
                     required
                 />
             </div>
@@ -114,25 +148,33 @@ export const NewTransactionForm = () => {
                             name="useEqualPaySwitch"
                             role="switch"
                             checked={useEqualSplit}
-                            onChange={_ => setUseEqualSplit(!useEqualSplit)}
+                            onChange={(_) => setUseEqualSplit(!useEqualSplit)}
                         />
                         Split equally
                     </span>
-                    {!useEqualSplit && <PaymentSumDiscrepancyCard totalAmount={totalAmount} transactionPaymentSum={currentPaymentSum} />}
+                    {!useEqualSplit && (
+                        <PaymentSumDiscrepancyCard
+                            totalAmount={totalAmount}
+                            transactionPaymentSum={currentPaymentSum}
+                        />
+                    )}
                 </label>
             </fieldset>
             <div>
-                {!!transactionFormContent.formTransaction.payments
-                    && transactionFormContent.formTransaction.payments.map(p => (
-                        <PaymentCardPayInput payment={p} equalSplit={useEqualSplit} onValueChange={(v) => onPayInputEdit(p, v)} />
+                {!!transactionFormContent.formTransaction.payments &&
+                    transactionFormContent.formTransaction.payments.map((p) => (
+                        <PaymentCardPayInput
+                            payment={p}
+                            equalSplit={useEqualSplit}
+                            onValueChange={(v) => onPayInputEdit(p, v)}
+                        />
                     ))}
             </div>
             <div>
-                <button
-                    type="submit"
-                    onClick={onFormSubmit}
-                >Create Transaction </button>
+                <button type="submit" onClick={onFormSubmit}>
+                    Create Transaction{' '}
+                </button>
             </div>
         </form>
-    );
+    )
 }

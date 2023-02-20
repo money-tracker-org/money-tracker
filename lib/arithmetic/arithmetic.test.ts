@@ -1,9 +1,9 @@
-import { evaluateArithmeticExpression } from './arithmetic';
+import { evaluateArithmeticExpression } from './arithmetic'
 
 test('Undefined evaluates to 0', async () => {
     const value = evaluateArithmeticExpression(undefined)
     expect(value).toBe(0)
-});
+})
 
 const generateRandomInt = () => {
     const exponent = Math.pow(10, Math.round(Math.random() * 10))
@@ -28,7 +28,7 @@ test('Expect integer parsed correctly', async () => {
         expect(value).toBe(num.value)
         num = gen.next()
     }
-});
+})
 
 test('Expect float parsed correctly', async () => {
     const gen = numberGenerator(100, generateRandomFloat)
@@ -38,7 +38,7 @@ test('Expect float parsed correctly', async () => {
         expect(value).toBe(num.value)
         num = gen.next()
     }
-});
+})
 
 const testExpression = (expr: string, expected: number) => {
     const value = evaluateArithmeticExpression(expr)
@@ -53,21 +53,21 @@ const testExpressionJs = (expr: string) => {
 }
 
 test('Test add and subtract', async () => {
-    testExpression("1+1", 2)
-    testExpression("1-1", 0)
-    testExpression("1-5-1", -5)
-    testExpression("1+1+1", 3)
-    testExpression("5,1+1+1", 7.1)
-    testExpression("5.1 +\n9-101", -86.9)
-    testExpression("1.33-0.33+123", 124)
-    testExpressionJs("0.2-0.2-0.5-0.2")
-});
+    testExpression('1+1', 2)
+    testExpression('1-1', 0)
+    testExpression('1-5-1', -5)
+    testExpression('1+1+1', 3)
+    testExpression('5,1+1+1', 7.1)
+    testExpression('5.1 +\n9-101', -86.9)
+    testExpression('1.33-0.33+123', 124)
+    testExpressionJs('0.2-0.2-0.5-0.2')
+})
 
-describe("random expression with additions and deletions", () => {
+describe('random expression with additions and deletions', () => {
     for (let i = 0; i < 5; i++) {
         let expression = generateRandomFloat().toString()
         for (let i = 0; i < Math.random() * 100; i++) {
-            const opCode = Math.random() > 0.5 ? "+" : "-"
+            const opCode = Math.random() > 0.5 ? '+' : '-'
             expression += `${opCode}${generateRandomFloat().toString()}`
         }
         it(expression, () => {
@@ -77,19 +77,18 @@ describe("random expression with additions and deletions", () => {
 })
 
 test('Test multiply and devide', async () => {
-    testExpression("1*1", 1)
-    testExpression("2*2", 4)
-    testExpression("2/2", 1)
-    testExpression("2*2*2/2", 4)
-    testExpressionJs("7* 9*13\n/5")
-});
+    testExpression('1*1', 1)
+    testExpression('2*2', 4)
+    testExpression('2/2', 1)
+    testExpression('2*2*2/2', 4)
+    testExpressionJs('7* 9*13\n/5')
+})
 
-
-describe("random expression with multiplications and divisions", () => {
+describe('random expression with multiplications and divisions', () => {
     for (let i = 0; i < 5; i++) {
         let expression = generateRandomFloat().toString()
         for (let i = 0; i < Math.random() * 100; i++) {
-            const opCode = Math.random() > 0.5 ? "*" : "/"
+            const opCode = Math.random() > 0.5 ? '*' : '/'
             expression += `${opCode}${generateRandomFloat().toString()}`
         }
         it(expression, () => {
@@ -98,12 +97,12 @@ describe("random expression with multiplications and divisions", () => {
     }
 })
 
-describe("random expression with additions, subtractions, multiplications, divisions", () => {
+describe('random expression with additions, subtractions, multiplications, divisions', () => {
     for (let i = 0; i < 5; i++) {
         let expression = generateRandomFloat().toString()
         for (let i = 0; i < Math.random() * 100; i++) {
-            const addSub = Math.random() > 0.5 ? "+" : "-"
-            const mulDiv = Math.random() > 0.5 ? "*" : "/"
+            const addSub = Math.random() > 0.5 ? '+' : '-'
+            const mulDiv = Math.random() > 0.5 ? '*' : '/'
             const opCode = Math.random() > 0.5 ? addSub : mulDiv
             expression += `${opCode}${generateRandomFloat().toString()}`
         }
@@ -112,4 +111,3 @@ describe("random expression with additions, subtractions, multiplications, divis
         })
     }
 })
-

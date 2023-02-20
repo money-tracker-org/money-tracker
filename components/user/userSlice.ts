@@ -1,18 +1,18 @@
-import type { PayloadAction } from '@reduxjs/toolkit';
-import { createSlice } from '@reduxjs/toolkit';
-import { User } from '../../lib/entity/User';
-import { AppDispatch, AppGetState, RootState } from '../../pages/store';
+import type { PayloadAction } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit'
+import { User } from '../../lib/entity/User'
+import { AppDispatch, AppGetState, RootState } from '../../pages/store'
 
 export interface UserState {
     users: User[]
-    loading: boolean,
+    loading: boolean
     error?: Error
 }
 
 const initialState: UserState = {
     users: [],
     loading: false,
-    error: undefined
+    error: undefined,
 }
 
 export const userSlice = createSlice({
@@ -43,35 +43,47 @@ export const userSlice = createSlice({
     },
 })
 
-export const createNewUser = (user: Partial<User>) => async (dispatch: AppDispatch, getState: AppGetState) => {
-    dispatch(userSlice.actions.createNewUserStarted())
-    try {
-        const response = await fetch(`${getState().global.backendUrl}/api/user`, {
-            body: JSON.stringify(user),
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-        })
-        const createdUser = await response.json()
-        dispatch(userSlice.actions.createNewUserSuccess(createdUser))
-    } catch (e) {
-        dispatch(userSlice.actions.createNewUserError(e as Error))
+export const createNewUser =
+    (user: Partial<User>) =>
+    async (dispatch: AppDispatch, getState: AppGetState) => {
+        dispatch(userSlice.actions.createNewUserStarted())
+        try {
+            const response = await fetch(
+                `${getState().global.backendUrl}/api/user`,
+                {
+                    body: JSON.stringify(user),
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                }
+            )
+            const createdUser = await response.json()
+            dispatch(userSlice.actions.createNewUserSuccess(createdUser))
+        } catch (e) {
+            dispatch(userSlice.actions.createNewUserError(e as Error))
+        }
     }
-}
 
-export const fetchUsersIfNotFound = () => async (dispatch: AppDispatch, getState: AppGetState) => {
-    const usersState = getState().user
-    if (!!usersState.error || usersState.loading || usersState.users.length > 0) {
-        return
+export const fetchUsersIfNotFound =
+    () => async (dispatch: AppDispatch, getState: AppGetState) => {
+        const usersState = getState().user
+        if (
+            !!usersState.error ||
+            usersState.loading ||
+            usersState.users.length > 0
+        ) {
+            return
+        }
+        dispatch(userSlice.actions.fetchUsersStarted())
+        try {
+            const response = await fetch(
+                `${getState().global.backendUrl}/api/user`
+            )
+            const users = await response.json()
+            dispatch(userSlice.actions.fetchUsersSuccess(users))
+        } catch (e) {
+            dispatch(userSlice.actions.fetchUsersError(e as Error))
+        }
     }
-    dispatch(userSlice.actions.fetchUsersStarted())
-    try {
-        const response = await fetch(`${getState().global.backendUrl}/api/user`)
-        const users = await response.json()
-        dispatch(userSlice.actions.fetchUsersSuccess(users))
-    } catch (e) {
-        dispatch(userSlice.actions.fetchUsersError(e as Error))
-    }
-}
 
 export const userListSelector = (state: RootState) => state.user.users
 

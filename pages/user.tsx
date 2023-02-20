@@ -1,5 +1,5 @@
-import CreateNewUser from '../components/user/NewUserForm';
-import { UserList } from '../components/user/UserList';
+import CreateNewUser from '../components/user/NewUserForm'
+import { UserList } from '../components/user/UserList'
 
 export default function UsersPage() {
     return (

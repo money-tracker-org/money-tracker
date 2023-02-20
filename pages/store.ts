@@ -1,15 +1,15 @@
-import { configureStore, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
-import transactionFormSlice from '../components/transaction/transactionFormSlice';
-import transactionSlice from '../components/transaction/transactionSlice';
-import userSlice from '../components/user/userSlice';
+import { configureStore, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
+import transactionFormSlice from '../components/transaction/transactionFormSlice'
+import transactionSlice from '../components/transaction/transactionSlice'
+import userSlice from '../components/user/userSlice'
 
 interface GlobalState {
     backendUrl: string
 }
 
 const initialState: GlobalState = {
-    backendUrl: "http://localhost:3000"
+    backendUrl: 'http://localhost:3000',
 }
 
 const globalSlice = createSlice({
@@ -18,7 +18,7 @@ const globalSlice = createSlice({
     reducers: {
         setBackendUrl: (state, action: PayloadAction<string>) => {
             state.backendUrl = action.payload
-        }
+        },
     },
 })
 
@@ -30,9 +30,8 @@ export const store = configureStore({
         user: userSlice,
         transaction: transactionSlice,
         transactionForm: transactionFormSlice,
-    }
+    },
 })
-
 
 export type RootState = ReturnType<typeof store.getState>
 export type AppGetState = typeof store.getState

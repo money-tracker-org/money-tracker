@@ -1,8 +1,7 @@
-import "reflect-metadata"
+import 'reflect-metadata'
 
-
-import type { Config } from "jest"
-import nextJest from "next/jest"
+import type { Config } from 'jest'
+import nextJest from 'next/jest'
 
 const createJestConfig = nextJest({
     // Provide the path to your Next.js app to load next.config.js and .env files in your test environment
@@ -17,7 +16,7 @@ const nextjsJestConfig: Config = {
     moduleDirectories: ['node_modules', '<rootDir>/'],
     moduleNameMapper: {
         // Force module uuid to resolve with the CJS entry point, because Jest does not support package.json.exports. See https://github.com/uuidjs/uuid/issues/451
-        "uuid": require.resolve('uuid'),
+        uuid: require.resolve('uuid'),
     },
     testEnvironment: 'jest-environment-node',
 }

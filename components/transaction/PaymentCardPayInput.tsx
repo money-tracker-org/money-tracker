@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import styles from './PaymentCardPayInput.module.css';
-import { TransactionFormPayment } from './transactionFormSlice';
+import { useState } from 'react'
+import styles from './PaymentCardPayInput.module.css'
+import { TransactionFormPayment } from './transactionFormSlice'
 
 interface PaymentCardPayInputProps {
     payment: TransactionFormPayment
@@ -8,17 +8,21 @@ interface PaymentCardPayInputProps {
     onValueChange: (val: string) => void
 }
 
-export const PaymentCardPayInput = ({ payment, equalSplit, onValueChange }: PaymentCardPayInputProps) => {
-
+export const PaymentCardPayInput = ({
+    payment,
+    equalSplit,
+    onValueChange,
+}: PaymentCardPayInputProps) => {
     const [editedManually, setEditedManually] = useState(false)
     if (editedManually && equalSplit) {
         setEditedManually(false)
     }
 
-
     return (
         <article className={styles.usercard}>
-            <kbd>{payment.user.firstName} {payment.user.lastName}</kbd>
+            <kbd>
+                {payment.user.firstName} {payment.user.lastName}
+            </kbd>
             <span>
                 <input
                     className={styles.paymentCardAmountInput}
@@ -27,7 +31,7 @@ export const PaymentCardPayInput = ({ payment, equalSplit, onValueChange }: Paym
                     name="amount"
                     disabled={equalSplit}
                     value={payment.rawPaymentInput}
-                    onChange={e => onValueChange(e.target.value)}
+                    onChange={(e) => onValueChange(e.target.value)}
                 />
             </span>
         </article>

@@ -1,15 +1,15 @@
-import { NextApiResponse } from 'next';
+import { NextApiResponse } from 'next'
 
 interface MockApiResponse {
-    status: jest.Mock,
-    json: jest.Mock,
+    status: jest.Mock
+    json: jest.Mock
     send: jest.Mock
 }
 
 export const mockRes: MockApiResponse & NextApiResponse = {
     status: jest.fn((code: number) => mockRes),
-    json: jest.fn((obj: object) => { }),
-    send: jest.fn((obj: object) => { })
+    json: jest.fn((obj: object) => {}),
+    send: jest.fn((obj: object) => {}),
 } as unknown as MockApiResponse & NextApiResponse
 
 afterEach(() => {

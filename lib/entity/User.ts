@@ -1,23 +1,23 @@
-import { IsInt, IsOptional, IsString } from 'class-validator';
-import type { Relation } from 'typeorm';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import type { Payment } from "./Payment";
+import { IsInt, IsOptional, IsString } from 'class-validator'
+import type { Relation } from 'typeorm'
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import type { Payment } from './Payment'
 
 @Entity()
 export class User {
     @PrimaryGeneratedColumn()
     @IsInt()
     @IsOptional()
-    id: number;
+    id: number
 
     @Column()
     @IsString()
-    firstName: string;
+    firstName: string
 
     @Column()
     @IsString()
-    lastName: string;
+    lastName: string
 
-    @OneToMany("Payment", (payment: Payment) => payment.user)
-    payments: Relation<Payment[]>;
+    @OneToMany('Payment', (payment: Payment) => payment.user)
+    payments: Relation<Payment[]>
 }
