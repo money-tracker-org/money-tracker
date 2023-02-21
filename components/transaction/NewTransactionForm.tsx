@@ -70,7 +70,7 @@ export const NewTransactionForm = () => {
             amount: !!totalAmount,
         }
         let formValid = true
-        Object.entries(newFieldsValid).forEach(([property, value]) => {
+        Object.entries(newFieldsValid).forEach(([_, value]) => {
             formValid = formValid && value
         })
         setFieldsValid(newFieldsValid)
@@ -158,8 +158,9 @@ export const NewTransactionForm = () => {
             </fieldset>
             <div>
                 {!!transactionFormContent.formTransaction.payments &&
-                    transactionFormContent.formTransaction.payments.map((p) => (
+                    transactionFormContent.formTransaction.payments.map((p, idx) => (
                         <PaymentCardPayInput
+                            key={idx}
                             payment={p}
                             equalSplit={useEqualSplit}
                             onValueChange={(v) => onPayInputEdit(p, v)}
