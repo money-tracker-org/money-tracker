@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { evaluateArithmeticExpressionSafe } from '../../lib/arithmetic/arithmetic'
 import { Payment } from '../../lib/entity/Payment'
 import { useAppDispatch, useAppSelector } from '../../pages/store'
-import { fetchUsersIfNotFound, userListSelector } from '../user/userSlice'
+import { useCurrentGroup } from '../group/CurrentGroup'
 import { PaymentCardPayInput } from './PaymentCardPayInput'
 import { PaymentSumDiscrepancyCard } from './PaymentSumDiscrepancyCard'
 import {
@@ -11,16 +11,12 @@ import {
     transactionFormFieldChange,
     transactionFormItemSelector,
     transactionFormUnequalAmountChange,
-    transactionFormUnequalPaymentChange,
+    transactionFormUnequalPaymentChange
 } from './transactionFormSlice'
 
 export const NewTransactionForm = () => {
     const dispatch = useAppDispatch()
-    const usersLoading = useAppSelector((state) => state.user.loading)
-    const users = useAppSelector(userListSelector)
-    useEffect(() => {
-        dispatch(fetchUsersIfNotFound())
-    }, [])
+    const group = useCurrentGroup()
     const [fieldsValid, setFieldsValid] = useState({
         title: true,
         date: true,
@@ -50,14 +46,14 @@ export const NewTransactionForm = () => {
             dispatch(
                 transactionFormEqualSplitAmountChange({
                     totalAmount: totalAmountValue,
-                    users,
+                    users: group?.users ?? [],
                 })
             )
         } else {
             dispatch(
                 transactionFormUnequalAmountChange({
                     totalAmount: totalAmountValue,
-                    users,
+                    users: group?.users ?? [],
                 })
             )
         }
@@ -80,7 +76,7 @@ export const NewTransactionForm = () => {
         setFieldsValid(newFieldsValid)
         if (formValid) {
             dispatch(
-                createNewTransaction(transactionFormContent.formTransaction)
+                createNewTransaction(transactionFormContent.formTransaction, group?.gid ?? null)
             )
         }
     }
@@ -94,7 +90,7 @@ export const NewTransactionForm = () => {
             transactionFormUnequalPaymentChange({
                 payment: payment,
                 newPayment: value,
-                users: users,
+                users: group?.users ?? [],
                 totalAmount: totalAmountValue,
             })
         )

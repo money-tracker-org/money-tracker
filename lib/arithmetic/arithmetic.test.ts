@@ -111,3 +111,9 @@ describe('random expression with additions, subtractions, multiplications, divis
         })
     }
 })
+
+test('Test operation ordering', async () => {
+    testExpression('1/4 + 2/4', 0.75)
+    // I assume these to be common case: 2 beers and quarter pizza or such
+    testExpression('2*3.9 + 18/4', 12.3)
+})

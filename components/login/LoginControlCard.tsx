@@ -5,20 +5,22 @@ export const LoginControlCard = () => {
     const { data: session } = useSession()
     if (!!session && !!session.user) {
         return (
-            <>
-                <button onClick={() => signOut()}>
-                    <span>{session.user.name}</span>
-                    <BoxArrowRight className={styles.loginIcon} />
-                </button>
-            </>
+            <button
+                onClick={() => signOut()}
+                className={styles.loginButton}
+            >
+                <span>{session.user.name}</span>
+                <BoxArrowRight className={styles.loginIcon} />
+            </button>
         )
     }
     return (
-        <>
-            <button onClick={() => signIn()}>
-                <span>Sign in</span>
-                <BoxArrowInLeft className={styles.loginIcon} />
-            </button>
-        </>
+        <button
+            onClick={() => signIn()}
+            className={styles.loginButton}
+        >
+            <span>Sign in</span>
+            <BoxArrowInLeft className={styles.loginIcon} />
+        </button>
     )
 }

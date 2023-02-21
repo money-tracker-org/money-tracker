@@ -1,5 +1,5 @@
-import Link from 'next/link'
-import { LoginControlCard } from '../login/LoginControlCard'
+import { LoginControlCard } from '../login/LoginControlCard';
+import { SelectedGroupNav } from './SelectedGroupNav';
 
 export const Header = () => {
     return (
@@ -7,16 +7,10 @@ export const Header = () => {
             <nav className="container-fluid">
                 <ul>
                     <li>
-                        <strong>money-tracker</strong>
+                        <SelectedGroupNav />
                     </li>
                 </ul>
                 <ul>
-                    <li>
-                        <Link href="/user">Users</Link>
-                    </li>
-                    <li>
-                        <Link href="/transaction">Transaction</Link>
-                    </li>
                     <li>
                         <LoginControlCard />
                     </li>

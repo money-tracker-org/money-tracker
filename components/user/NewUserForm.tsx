@@ -1,32 +1,31 @@
-import { useState } from 'react'
-import { User } from '../../lib/entity/User'
-import { useAppDispatch, useAppSelector } from '../../pages/store'
-import { createNewUser } from './userSlice'
+import { useState } from 'react';
+import { User } from '../../lib/entity/User';
+import { useAppDispatch, useAppSelector } from '../../pages/store';
+import { useCurrentGroup } from '../group/CurrentGroup';
+import { createNewUser } from '../group/groupSlice';
 
 export default function CreateNewUser() {
-    const loading = useAppSelector((state) => state.user.loading)
+    const loading = useAppSelector((state) => state.group.loading)
     const dispatch = useAppDispatch()
+    const group = useCurrentGroup()
     const [inputForm, setFormInfo] = useState<Partial<User>>({
-        firstName: '',
-        lastName: '',
+        displayName: '',
     })
     const handleKeyPress = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormInfo({ ...inputForm, [e.target.name]: e.target.value })
     }
     const [fieldsValid, setFieldsValid] = useState({
-        firstName: true,
-        lastName: true,
+        displayName: true,
     })
     const submitUser = () => {
         const validationResult = {
-            firstName: inputForm.firstName !== '',
-            lastName: inputForm.lastName !== '',
+            displayName: inputForm.displayName !== '',
         }
         setFieldsValid(validationResult)
-        if (validationResult.firstName && validationResult.lastName) {
-            dispatch(createNewUser(inputForm))
+        if (validationResult.displayName) {
+            dispatch(createNewUser(inputForm, group))
         }
-        setFormInfo({ firstName: '', lastName: '' })
+        setFormInfo({ displayName: '' })
     }
 
     return (
@@ -34,31 +33,15 @@ export default function CreateNewUser() {
             <div>
                 <input
                     type="text"
-                    name="firstName"
+                    name="displayName"
                     disabled={loading}
                     autoComplete="off"
                     autoCorrect="off"
-                    placeholder="First name"
-                    value={inputForm.firstName}
+                    placeholder="Name"
+                    value={inputForm.displayName}
                     onChange={handleKeyPress}
                     aria-invalid={
-                        fieldsValid.firstName === true ? undefined : true
-                    }
-                    required
-                />
-            </div>
-            <div>
-                <input
-                    type="text"
-                    name="lastName"
-                    placeholder="Last name"
-                    autoComplete="off"
-                    autoCorrect="off"
-                    disabled={loading}
-                    value={inputForm.lastName}
-                    onChange={handleKeyPress}
-                    aria-invalid={
-                        fieldsValid.lastName === true ? undefined : true
+                        fieldsValid.displayName === true ? undefined : true
                     }
                     required
                 />

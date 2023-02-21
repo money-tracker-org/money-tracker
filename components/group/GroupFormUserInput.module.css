@@ -1,0 +1,21 @@
+.userContainer {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.userContainer > input {
+    width: auto;
+}
+
+.userContainer > button {
+    width: auto;
+}
+
+.userNameInput {
+    min-width: 15em;
+    flex-grow: 1;
+}
+
+.userRemoveButton {
+    flex-grow: 0.3;
+}
