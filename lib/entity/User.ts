@@ -1,7 +1,14 @@
-import { IsInt, IsOptional, IsString } from 'class-validator'
-import type { Relation } from 'typeorm'
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
-import type { Payment } from './Payment'
+import { Allow, IsBoolean, IsInt, IsOptional, IsString } from 'class-validator';
+import type { Relation } from 'typeorm';
+import {
+    Column,
+    Entity,
+    ManyToOne,
+    OneToMany,
+    PrimaryGeneratedColumn
+} from 'typeorm';
+import type { Group } from './Group';
+import type { Payment } from './Payment';
 
 @Entity()
 export class User {
@@ -12,12 +19,17 @@ export class User {
 
     @Column()
     @IsString()
-    firstName: string
+    displayName: string
 
-    @Column()
-    @IsString()
-    lastName: string
+    @Column('boolean', { default: false })
+    @IsBoolean()
+    @IsOptional()
+    disabled: boolean
 
     @OneToMany('Payment', (payment: Payment) => payment.user)
     payments: Relation<Payment[]>
+
+    @ManyToOne('Group', (group: Group) => group.users)
+    @Allow()
+    group: Relation<Group>
 }

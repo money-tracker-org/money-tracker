@@ -96,7 +96,7 @@ class OperationNode implements Node {
 }
 
 const makeOperatorNode: (expr: Expr) => Node = (expr: Expr) => {
-    // find first occurance of + or -
+    // find last occurance of + or -
     const lastPlusMinusOpPos = lastIndexOf(expr, ['+', '-'])
     const lastMultiplyDevidePos = lastIndexOf(expr, ['*', '/'])
     const lastOperatorPos =

@@ -170,35 +170,36 @@ export const transactionFormSlice = createSlice({
 })
 
 export const createNewTransaction =
-    (transaction: Partial<Transaction>) =>
-    async (dispatch: AppDispatch, getState: AppGetState) => {
-        dispatch(transactionFormSlice.actions.createNewTransactionStarted())
-        try {
-            const response = await fetch(
-                `${getState().global.backendUrl}/api/transaction`,
-                {
-                    body: JSON.stringify(transaction),
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                }
-            )
-            const createdTransaction = await response.json()
-            dispatch(
-                transactionSlice.createNewTransactionSuccess(createdTransaction)
-            )
-            dispatch(
-                transactionFormSlice.actions.createNewTransactionSuccess(
-                    createdTransaction
+    (transaction: Partial<Transaction>, gid: string | null) =>
+        async (dispatch: AppDispatch, getState: AppGetState) => {
+            if (!gid) return
+            dispatch(transactionFormSlice.actions.createNewTransactionStarted())
+            try {
+                const response = await fetch(
+                    `${getState().global.backendUrl}/api/group/${gid}/transaction`,
+                    {
+                        body: JSON.stringify(transaction),
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                    }
                 )
-            )
-        } catch (e) {
-            dispatch(
-                transactionFormSlice.actions.createNewTransactionError(
-                    e as Error
+                const createdTransaction = await response.json()
+                dispatch(
+                    transactionSlice.createNewTransactionSuccess(createdTransaction)
                 )
-            )
+                dispatch(
+                    transactionFormSlice.actions.createNewTransactionSuccess(
+                        createdTransaction
+                    )
+                )
+            } catch (e) {
+                dispatch(
+                    transactionFormSlice.actions.createNewTransactionError(
+                        e as Error
+                    )
+                )
+            }
         }
-    }
 
 export const transactionFormItemSelector = (state: RootState) =>
     state.transactionForm

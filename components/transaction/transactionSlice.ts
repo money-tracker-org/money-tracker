@@ -1,7 +1,8 @@
-import type { PayloadAction } from '@reduxjs/toolkit'
-import { createSlice } from '@reduxjs/toolkit'
-import { Transaction } from '../../lib/entity/Transaction'
-import { AppDispatch, AppGetState, RootState } from '../../pages/store'
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
+import { Group } from 'lib/entity/Group';
+import { Transaction } from '../../lib/entity/Transaction';
+import { AppDispatch, AppGetState, RootState } from '../../pages/store';
 
 export interface TransactionState {
     transcations: Transaction[]
@@ -44,11 +45,12 @@ export const transactionSlice = createSlice({
 })
 
 export const fetchTransactions =
-    () => async (dispatch: AppDispatch, getState: AppGetState) => {
+    (group: Group | null) => async (dispatch: AppDispatch, getState: AppGetState) => {
+        if (!group?.gid) return
         dispatch(transactionSlice.actions.fetchTransactionsStarted())
         try {
             const response = await fetch(
-                `${getState().global.backendUrl}/api/transaction`
+                `${getState().global.backendUrl}/api/group/${group.gid}/transaction`
             )
             const users = await response.json()
             dispatch(transactionSlice.actions.fetchTransactionsSuccess(users))

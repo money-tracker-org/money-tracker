@@ -1,8 +1,8 @@
 import { configureStore, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
+import groupSlice from '../components/group/groupSlice'
 import transactionFormSlice from '../components/transaction/transactionFormSlice'
 import transactionSlice from '../components/transaction/transactionSlice'
-import userSlice from '../components/user/userSlice'
 
 interface GlobalState {
     backendUrl: string
@@ -27,9 +27,9 @@ export const { setBackendUrl } = globalSlice.actions
 export const store = configureStore({
     reducer: {
         global: globalSlice.reducer,
-        user: userSlice,
         transaction: transactionSlice,
         transactionForm: transactionFormSlice,
+        group: groupSlice,
     },
 })
 

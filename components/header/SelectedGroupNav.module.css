@@ -1,0 +1,9 @@
+.navTitle {
+    font-size: larger;
+    display: inline-block;
+    width: 100%;
+    max-width: 16em;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}

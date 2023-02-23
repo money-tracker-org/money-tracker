@@ -21,7 +21,7 @@ export const PaymentCardPayInput = ({
     return (
         <article className={styles.usercard}>
             <kbd>
-                {payment.user.firstName} {payment.user.lastName}
+                {payment.user.displayName}
             </kbd>
             <span>
                 <input

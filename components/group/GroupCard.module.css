@@ -1,0 +1,15 @@
+.groupCardContainer {
+    width: 100%;
+    display: flex
+}
+
+.groupCardBody {
+    flex-grow: 1;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+button.editGroupButton {
+    width: auto;
+}
