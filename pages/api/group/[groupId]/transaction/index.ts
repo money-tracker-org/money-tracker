@@ -93,9 +93,9 @@ const postTransaction = async (
     if (!transaction.payments) {
         return res.status(400).send("Can not add transaction without payments")
     }
-    transaction.payments = transaction.payments?.map((p: any) => {
+    transaction.payments = transaction.payments?.map((p: Partial<Payment>) => {
         p.user = {
-            id: p.user.id,
+            id: p.user?.id ?? undefined,
             group: {
                 gid: group.gid
             } as Group
