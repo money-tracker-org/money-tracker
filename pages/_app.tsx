@@ -49,12 +49,12 @@ export default function MyApp({
                     type="image/png"
                     sizes="32x32"
                 />
-                <link rel="apple-touch-icon" href="/apple-icon.png"></link>
+                <link rel="apple-touch-icon" href="/apple-icon.png" />
                 <meta name="theme-color" content="#317EFB" />
             </Head>
             <SessionProvider session={session}>
                 <Provider store={store}>
-                    <Header></Header>
+                    <Header />
                     <Component {...pageProps} />
                 </Provider>
             </SessionProvider>

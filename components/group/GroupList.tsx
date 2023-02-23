@@ -23,8 +23,13 @@ export const GroupList = () => {
     }
     return (
         <div>
-            {groups.map((g) => (
-                <GroupCard group={g} onGroupClick={() => onGroupSelected(g)} onGroupEditClick={() => onGroupEdit(g)} />
+            {groups.map((g, idx) => (
+                <GroupCard
+                    key={idx}
+                    group={g}
+                    onGroupClick={() => onGroupSelected(g)}
+                    onGroupEditClick={() => onGroupEdit(g)}
+                />
             ))}
         </div>
     )

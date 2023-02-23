@@ -91,7 +91,7 @@ export const transactionFormSlice = createSlice({
             }
             const payments: TransactionFormPayment[] =
                 state.formTransaction.payments
-            for (var p of payments) {
+            for (const p of payments) {
                 if (!p.editedManually) {
                     p.amountInEur = onePart
                     p.rawPaymentInput = onePart.toString()
