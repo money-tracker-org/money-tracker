@@ -4,7 +4,7 @@ import { evaluateArithmeticExpressionSafe } from '../../lib/arithmetic/arithmeti
 import { Payment } from '../../lib/entity/Payment'
 import { Transaction } from '../../lib/entity/Transaction'
 import { User } from '../../lib/entity/User'
-import { AppDispatch, AppGetState, RootState } from '../store'
+import { AppDispatch, AppGetState, RootState } from '../typedStore'
 import * as transactionSlice from './transactionSlice'
 
 export type TransactionFormPayment = Payment &

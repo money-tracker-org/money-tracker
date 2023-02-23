@@ -1,25 +1,27 @@
-import { useAppDispatch, useAppSelector } from 'components/store'
+import { useAppDispatch, useAppSelector } from 'components/typedStore'
 import { Group } from 'lib/entity/Group'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
-import { GroupCard } from './GroupCard'
-import { fetchGroupsIfNotFound, groupListSelector, setCurrentGroupId } from './groupSlice'
+import { AddNewGroupCard, GroupCard } from './GroupCard'
+import { fetchGroups, groupListSelector } from './groupSlice'
 
 export const GroupList = () => {
     const groups = useAppSelector(groupListSelector)
     const dispatch = useAppDispatch()
     const router = useRouter()
     useEffect(() => {
-        dispatch(fetchGroupsIfNotFound())
+        dispatch(fetchGroups())
     }, [])
     const onGroupSelected = (g: Group) => {
-        dispatch(setCurrentGroupId(g.gid))
         router.push(`/${g.gid}/transaction`)
     }
 
     const onGroupEdit = (g: Group) => {
-        dispatch(setCurrentGroupId(g.gid))
         router.push(`/${g.gid}/user`)
+    }
+
+    const onNewGroup = () => {
+        router.push(`/group`)
     }
     return (
         <div>
@@ -31,6 +33,7 @@ export const GroupList = () => {
                     onGroupEditClick={() => onGroupEdit(g)}
                 />
             ))}
+            <AddNewGroupCard onAddNewGroupClick={onNewGroup} />
         </div>
     )
 }

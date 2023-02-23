@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Transaction } from '../../lib/entity/Transaction';
 import { useCurrentGroup } from '../group/CurrentGroup';
-import { useAppDispatch, useAppSelector } from '../store';
+import { useAppDispatch, useAppSelector } from '../typedStore';
 import { fetchTransactions, transactionListSelector } from './transactionSlice';
 
 const renderTransactionCard = (transaction: Transaction) => {
@@ -20,7 +20,7 @@ export const TransactionList = () => {
     const dispatch = useAppDispatch()
     const group = useCurrentGroup()
     useEffect(() => {
-        dispatch(fetchTransactions(group))
+        dispatch(fetchTransactions(group?.gid ?? null))
     }, [group])
     return <div>{transactions.map((t) => renderTransactionCard(t))}</div>
 }

@@ -10,7 +10,7 @@ export class Payment {
     @IsOptional()
     id: number
 
-    @Column()
+    @Column({ type: "decimal", precision: 10 })
     @IsNumber()
     amountInEur: number
 

@@ -1,16 +1,16 @@
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import { useAppDispatch, useAppSelector } from '../store';
-import { fetchGroupsIfNotFound, groupListSelector } from './groupSlice';
+import { useAppDispatch, useAppSelector } from '../typedStore';
+import { fetchGroups, groupListSelector } from './groupSlice';
 
 
 export const useCurrentGroup = () => {
     const dispatch = useAppDispatch()
     const allGroups = useAppSelector(groupListSelector)
     const router = useRouter()
-    const groupIdFromRouter = router.query.groupId
+    const groupIdFromRouter = router.query.groupId as string
     useEffect(() => {
-        dispatch(fetchGroupsIfNotFound())
+        dispatch(fetchGroups())
     }, [])
     if (groupIdFromRouter === undefined) {
         return null

@@ -1,4 +1,4 @@
-import { useAppDispatch, useAppSelector } from 'components/store'
+import { useAppDispatch, useAppSelector } from 'components/typedStore'
 import { Group } from 'lib/entity/Group'
 import { User } from 'lib/entity/User'
 import { useState } from 'react'
@@ -24,7 +24,7 @@ export const GroupForm = () => {
     }
 
     return (
-        <form onSubmit={(e) => e.preventDefault()}>
+        <form onSubmit={submitGroup}>
             <div>
                 <input
                     type="text"
@@ -43,6 +43,7 @@ export const GroupForm = () => {
             <div>
                 <GroupFormUserInput
                     users={formInfo.users || []}
+                    loading={loading}
                     onUsersChange={(u) =>
                         setFormInfo({ ...formInfo, users: u as User[] })
                     }
@@ -51,10 +52,9 @@ export const GroupForm = () => {
             <div>
                 <button
                     type="submit"
-                    onClick={submitGroup}
                     aria-busy={loading ? 'true' : 'false'}
                 >
-                    Create New Group{' '}
+                    Create New Group
                 </button>
             </div>
         </form>

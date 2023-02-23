@@ -5,11 +5,13 @@ import styles from './GroupFormUserInput.module.css'
 interface GroupFormUserInputProps {
     users: Partial<User>[]
     onUsersChange: (newUsers: Partial<User>[]) => void
+    loading: boolean
 }
 
 export const GroupFormUserInput = ({
     users,
     onUsersChange,
+    loading,
 }: GroupFormUserInputProps) => {
     const addNewEmptyUserInput = () => {
         onUsersChange([...users, { displayName: '' }])
@@ -30,12 +32,16 @@ export const GroupFormUserInput = ({
                 <SingleUserInput
                     key={idx}
                     user={u}
+                    disabled={loading}
                     onChange={(newUser) => changeUser(idx, newUser as User)}
                     onRemove={() => removeUser(idx)}
                     removable={idx !== 0}
                 />
             ))}
-            <button type="button" onClick={addNewEmptyUserInput}>
+            <button
+                type="button"
+                onClick={addNewEmptyUserInput}
+                disabled={loading}>
                 Add User <PlusCircle />
             </button>
         </div>
@@ -48,6 +54,7 @@ interface SingleUserNameInputProps {
     onRemove: () => void
     onChange: (newUser: Partial<User>) => void
     key: string | number
+    disabled: boolean
 }
 
 const SingleUserInput = ({
@@ -55,6 +62,7 @@ const SingleUserInput = ({
     removable,
     onRemove,
     onChange,
+    disabled
 }: SingleUserNameInputProps) => {
     const renderRemoveButton = () => {
         if (!removable) {
@@ -62,6 +70,7 @@ const SingleUserInput = ({
         }
         return (
             <button
+                disabled={disabled}
                 type="button"
                 className={styles.userRemoveButton}
                 onClick={onRemove}
@@ -79,6 +88,7 @@ const SingleUserInput = ({
                 autoCorrect="off"
                 placeholder="User name"
                 value={user.displayName}
+                disabled={disabled}
                 onChange={(e) =>
                     onChange({ ...user, displayName: e.target.value })
                 }

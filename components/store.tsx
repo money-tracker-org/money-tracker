@@ -1,9 +1,9 @@
-import { configureStore, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import groupSlice from 'components/group/groupSlice'
-import transactionFormSlice from 'components/transaction/transactionFormSlice'
-import transactionSlice from 'components/transaction/transactionSlice'
-import { useEffect } from 'react'
-import { Provider, TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
+import { configureStore, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import groupSlice from 'components/group/groupSlice';
+import transactionFormSlice from 'components/transaction/transactionFormSlice';
+import transactionSlice from 'components/transaction/transactionSlice';
+import { useEffect } from 'react';
+import { Provider } from 'react-redux';
 
 interface GlobalState {
     backendUrl: string
@@ -33,14 +33,6 @@ export const store = configureStore({
         group: groupSlice,
     },
 })
-
-export type RootState = ReturnType<typeof store.getState>
-export type AppGetState = typeof store.getState
-export type AppDispatch = typeof store.dispatch
-export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
-type DispatchFunc = () => AppDispatch
-export const useAppDispatch: DispatchFunc = useDispatch
-
 
 interface AppStoreProps {
     children?: React.ReactNode;
