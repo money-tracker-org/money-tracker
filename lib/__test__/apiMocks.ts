@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextApiResponse } from 'next'
 
 interface MockApiResponse {
@@ -8,8 +10,8 @@ interface MockApiResponse {
 
 export const mockRes: MockApiResponse & NextApiResponse = {
     status: jest.fn((code: number) => mockRes),
-    json: jest.fn((obj: object) => {}),
-    send: jest.fn((obj: object) => {}),
+    json: jest.fn((obj: object) => { }),
+    send: jest.fn((obj: object) => { }),
 } as unknown as MockApiResponse & NextApiResponse
 
 afterEach(() => {

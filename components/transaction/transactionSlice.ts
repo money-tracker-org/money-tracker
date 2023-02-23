@@ -2,7 +2,7 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 import { Group } from 'lib/entity/Group';
 import { Transaction } from '../../lib/entity/Transaction';
-import { AppDispatch, AppGetState, RootState } from '../../pages/store';
+import { AppDispatch, AppGetState, RootState } from '../store';
 
 export interface TransactionState {
     transcations: Transaction[]

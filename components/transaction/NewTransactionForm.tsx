@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { evaluateArithmeticExpressionSafe } from '../../lib/arithmetic/arithmetic'
 import { Payment } from '../../lib/entity/Payment'
-import { useAppDispatch, useAppSelector } from '../../pages/store'
 import { useCurrentGroup } from '../group/CurrentGroup'
+import { useAppDispatch, useAppSelector } from '../store'
 import { PaymentCardPayInput } from './PaymentCardPayInput'
 import { PaymentSumDiscrepancyCard } from './PaymentSumDiscrepancyCard'
 import {
@@ -70,6 +70,7 @@ export const NewTransactionForm = () => {
             amount: !!totalAmount,
         }
         let formValid = true
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         Object.entries(newFieldsValid).forEach(([_, value]) => {
             formValid = formValid && value
         })
@@ -144,6 +145,7 @@ export const NewTransactionForm = () => {
                             name="useEqualPaySwitch"
                             role="switch"
                             checked={useEqualSplit}
+                            // eslint-disable-next-line @typescript-eslint/no-unused-vars
                             onChange={(_) => setUseEqualSplit(!useEqualSplit)}
                         />
                         Split equally

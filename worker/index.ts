@@ -21,7 +21,7 @@ self.addEventListener('message', (event) => {
 })
 
 self.addEventListener('push', (event) => {
-    const data = JSON.parse(event?.data.text() || '{}')
+    const data = JSON.parse(event?.data?.text() || '{}')
     if (data.title == 'update') {
         self.registration.update()
     }

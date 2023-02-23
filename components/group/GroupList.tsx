@@ -1,6 +1,6 @@
+import { useAppDispatch, useAppSelector } from 'components/store'
 import { Group } from 'lib/entity/Group'
 import { useRouter } from 'next/router'
-import { useAppDispatch, useAppSelector } from 'pages/store'
 import { useEffect } from 'react'
 import { GroupCard } from './GroupCard'
 import { fetchGroupsIfNotFound, groupListSelector, setCurrentGroupId } from './groupSlice'
@@ -23,7 +23,7 @@ export const GroupList = () => {
     }
     return (
         <div>
-            {groups.map((g, idx) => (
+            {groups.map((g: Group, idx: number) => (
                 <GroupCard
                     key={idx}
                     group={g}

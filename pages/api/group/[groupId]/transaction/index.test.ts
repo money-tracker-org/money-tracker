@@ -39,6 +39,8 @@ test('POST new transaction', async () => {
     )
     expect(mockRes.status).toBeCalledWith(201)
     transaction.id = 2
+    transaction.payments[0].id = 3
+    transaction.payments[1].id = 4
     expect(mockRes.json).toBeCalledWith(transaction)
 })
 

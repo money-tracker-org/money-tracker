@@ -4,7 +4,7 @@ import {
     IsArray,
     IsNumber,
     IsOptional,
-    IsString,
+    IsString
 } from 'class-validator'
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 import { Payment } from './Payment'
@@ -24,7 +24,7 @@ export class Transaction {
     @IsString()
     date: string
 
-    @OneToMany((type) => Payment, (payment: Payment) => payment.transaction, {
+    @OneToMany(() => Payment, (payment: Payment) => payment.transaction, {
         cascade: true,
     })
     @IsArray()

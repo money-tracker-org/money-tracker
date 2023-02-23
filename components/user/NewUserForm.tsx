@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { User } from '../../lib/entity/User';
-import { useAppDispatch, useAppSelector } from '../../pages/store';
 import { useCurrentGroup } from '../group/CurrentGroup';
 import { createNewUser } from '../group/groupSlice';
+import { useAppDispatch, useAppSelector } from '../store';
 
 export default function CreateNewUser() {
     const loading = useAppSelector((state) => state.group.loading)

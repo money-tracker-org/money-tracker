@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { AppDispatch, AppGetState, RootState } from 'components/store'
 import { Group } from 'lib/entity/Group'
 import { User } from 'lib/entity/User'
-import { AppDispatch, AppGetState, RootState } from 'pages/store'
 
 export interface GroupState {
     selectedGroupId: string | null

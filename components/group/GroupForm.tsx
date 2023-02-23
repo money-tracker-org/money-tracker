@@ -1,6 +1,6 @@
+import { useAppDispatch, useAppSelector } from 'components/store'
 import { Group } from 'lib/entity/Group'
 import { User } from 'lib/entity/User'
-import { useAppDispatch, useAppSelector } from 'pages/store'
 import { useState } from 'react'
 import { GroupFormUserInput } from './GroupFormUserInput'
 import { createNewGroup } from './groupSlice'
@@ -18,7 +18,7 @@ export const GroupForm = () => {
     })
 
     const submitGroup = () => {
-        if (!!formInfo.name) {
+        if (formInfo.name) {
             dispatch(createNewGroup(formInfo))
         }
     }

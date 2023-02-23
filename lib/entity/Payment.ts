@@ -14,7 +14,7 @@ export class Payment {
     @IsNumber()
     amountInEur: number
 
-    @ManyToOne((type) => User, (user: User) => user.payments)
+    @ManyToOne(() => User, (user: User) => user.payments)
     @Allow()
     user: User
 

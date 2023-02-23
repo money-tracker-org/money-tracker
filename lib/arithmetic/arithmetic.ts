@@ -1,6 +1,6 @@
 type Expr = string
-const constantExpressionRE = /^[\d\.]+$/
-const containsOperatorRE = /[\+\-\*/]/
+const constantExpressionRE = /^[\d.]+$/
+const containsOperatorRE = /[+\-*/]/
 
 export class InvalidExpressionError extends Error {
     fullExpression: Expr

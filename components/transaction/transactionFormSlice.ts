@@ -4,7 +4,7 @@ import { evaluateArithmeticExpressionSafe } from '../../lib/arithmetic/arithmeti
 import { Payment } from '../../lib/entity/Payment'
 import { Transaction } from '../../lib/entity/Transaction'
 import { User } from '../../lib/entity/User'
-import { AppDispatch, AppGetState, RootState } from '../../pages/store'
+import { AppDispatch, AppGetState, RootState } from '../store'
 import * as transactionSlice from './transactionSlice'
 
 export type TransactionFormPayment = Payment &
@@ -59,13 +59,13 @@ export const transactionFormSlice = createSlice({
     initialState,
     reducers: {
         transactionFormFieldChange: (
-            state,
+            state: TransactionFormState,
             action: PayloadAction<Partial<Transaction>>
         ) => {
             Object.assign(state.formTransaction, action.payload)
         },
         transactionFormEqualSplitAmountChange: (
-            state,
+            state: TransactionFormState,
             action: PayloadAction<AmountChange>
         ) => {
             const payments: Payment[] = makeDefaultPaymentsForUsers(
@@ -75,7 +75,7 @@ export const transactionFormSlice = createSlice({
             state.formTransaction.payments = payments
         },
         transactionFormUnequalAmountChange: (
-            state,
+            state: TransactionFormState,
             action: PayloadAction<AmountChange>
         ) => {
             const onePart =
@@ -100,7 +100,7 @@ export const transactionFormSlice = createSlice({
             state.formTransaction.payments = payments
         },
         transactionFormUnequalPaymentChange: (
-            state,
+            state: TransactionFormState,
             action: PayloadAction<UnequalPaymentChange>
         ) => {
             if (state.formTransaction.payments === undefined) {
@@ -154,15 +154,17 @@ export const transactionFormSlice = createSlice({
                 })
             state.formTransaction.payments = payments
         },
-        createNewTransactionStarted: (state) => {
+        createNewTransactionStarted: (state: TransactionFormState) => {
             state.loading = true
         },
-        createNewTransactionError: (state, action: PayloadAction<Error>) => {
+        createNewTransactionError: (
+            state: TransactionFormState,
+            action: PayloadAction<Error>
+        ) => {
             state.error = action.payload
         },
         createNewTransactionSuccess: (
-            state,
-            action: PayloadAction<Transaction>
+            state: TransactionFormState
         ) => {
             state.formTransaction = initialState.formTransaction
         },

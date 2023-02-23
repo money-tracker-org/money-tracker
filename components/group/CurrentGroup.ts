@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import { useAppDispatch, useAppSelector } from '../../pages/store';
+import { useAppDispatch, useAppSelector } from '../store';
 import { fetchGroupsIfNotFound, groupListSelector } from './groupSlice';
 
 

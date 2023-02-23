@@ -1,27 +1,16 @@
 import 'reflect-metadata'
 
 import '@picocss/pico'
+import { Header } from 'components/header/Header'
+import AppStore from 'components/store'
 import { SessionProvider } from 'next-auth/react'
 import { AppProps } from 'next/app'
 import Head from 'next/head'
-import { useEffect } from 'react'
-import { Provider } from 'react-redux'
-import { Header } from '../components/header/Header'
-import { setBackendUrl, store } from './store'
 
 export default function MyApp({
     Component,
     pageProps: { session, ...pageProps },
 }: AppProps) {
-    if (typeof window !== 'undefined') {
-        const currentHost = `${window.location.protocol}//${window.location.host}`
-        if (store.getState().global.backendUrl !== currentHost) {
-            store.dispatch(setBackendUrl(currentHost))
-        }
-    }
-    useEffect(() => {
-        Notification.requestPermission()
-    }, [])
 
     return (
         <>
@@ -53,10 +42,10 @@ export default function MyApp({
                 <meta name="theme-color" content="#317EFB" />
             </Head>
             <SessionProvider session={session}>
-                <Provider store={store}>
+                <AppStore>
                     <Header />
                     <Component {...pageProps} />
-                </Provider>
+                </AppStore>
             </SessionProvider>
         </>
     )

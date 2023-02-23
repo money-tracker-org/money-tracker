@@ -1,8 +1,8 @@
 import { useRouter } from 'next/router';
 import { ArrowLeft } from 'react-bootstrap-icons';
-import { useAppDispatch } from '../../pages/store';
 import { useCurrentGroup } from '../group/CurrentGroup';
 import { setCurrentGroupId } from '../group/groupSlice';
+import { useAppDispatch } from '../store';
 import styles from "./SelectedGroupNav.module.css";
 
 

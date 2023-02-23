@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Transaction } from '../../lib/entity/Transaction';
-import { useAppDispatch, useAppSelector } from '../../pages/store';
 import { useCurrentGroup } from '../group/CurrentGroup';
+import { useAppDispatch, useAppSelector } from '../store';
 import { fetchTransactions, transactionListSelector } from './transactionSlice';
 
 const renderTransactionCard = (transaction: Transaction) => {

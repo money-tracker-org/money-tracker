@@ -115,7 +115,7 @@ const postTransaction = async (
     if (createdTransaction === null) {
         return res.status(404).send("Not found!")
     }
-    createdTransaction.payments = createdTransaction.payments.map((p: any) => {
+    createdTransaction.payments = createdTransaction.payments.map((p: Payment | { user: Partial<User> }) => {
         delete p.user.group
         return p as Payment
     })
