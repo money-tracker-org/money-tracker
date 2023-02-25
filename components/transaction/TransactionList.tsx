@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Transaction } from '../../lib/entity/Transaction';
-import { useCurrentGroup } from '../group/CurrentGroup';
+import { useCurrentGroup } from '../group/groupSlice';
 import { useAppDispatch, useAppSelector } from '../typedStore';
 import { fetchTransactions, transactionListSelector } from './transactionSlice';
 

@@ -1,6 +1,7 @@
-import { Group } from "lib/entity/Group"
-import { Transaction } from "lib/entity/Transaction"
-import { User } from "lib/entity/User"
+import { Group } from "lib/entity/Group";
+import { Transaction } from "lib/entity/Transaction";
+import { User } from "lib/entity/User";
+import { GroupCollection, RegisteredGroup } from '../lib/dto/GroupCollection';
 
 const defaultFetchParams = {
     headers: { 'Content-Type': 'application/json' },
@@ -22,6 +23,20 @@ const groupApi = {
         const response = await fetch(
             `${baseUrl}/api/group`,
             defaultFetchParams
+        )
+        return await response.json() as Group[]
+    },
+    fetchGroupsCollection: async (registeredGroups: RegisteredGroup[], baseUrl: string) => {
+        const gc: GroupCollection = {
+            groups: registeredGroups
+        }
+        const response = await fetch(
+            `${baseUrl}/api/group/collection`,
+            {
+                method: 'POST',
+                body: JSON.stringify(gc),
+                ...defaultFetchParams
+            }
         )
         return await response.json() as Group[]
     },
@@ -55,7 +70,7 @@ const transactionApi = {
             `${backendUrl}/api/group/${gid}/transaction`
         )
         return await response.json() as Transaction[]
-    }
+    },
 }
 
 export const apiClient = {

@@ -1,5 +1,5 @@
 import { User } from '../../lib/entity/User'
-import { useCurrentGroup } from '../group/CurrentGroup'
+import { useCurrentGroup } from '../group/groupSlice'
 import styles from './UserList.module.css'
 
 const renderUserCard = (user: User) => {

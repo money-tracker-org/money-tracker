@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import { ArrowLeft } from 'react-bootstrap-icons';
-import { useCurrentGroup } from '../group/CurrentGroup';
+import { useCurrentGroup } from '../group/groupSlice';
 import styles from "./SelectedGroupNav.module.css";
 
 
