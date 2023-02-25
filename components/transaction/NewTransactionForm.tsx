@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { evaluateArithmeticExpressionSafe } from '../../lib/arithmetic/arithmetic'
 import { Payment } from '../../lib/entity/Payment'
 import { useCurrentGroup } from '../group/CurrentGroup'
-import { useAppDispatch, useAppSelector } from '../store'
+import { useAppDispatch, useAppSelector } from '../typedStore'
 import { PaymentCardPayInput } from './PaymentCardPayInput'
 import { PaymentSumDiscrepancyCard } from './PaymentSumDiscrepancyCard'
 import {

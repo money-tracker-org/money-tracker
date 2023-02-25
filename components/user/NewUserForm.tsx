@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { User } from '../../lib/entity/User';
 import { useCurrentGroup } from '../group/CurrentGroup';
 import { createNewUser } from '../group/groupSlice';
-import { useAppDispatch, useAppSelector } from '../store';
+import { useAppDispatch, useAppSelector } from '../typedStore';
 
 export default function CreateNewUser() {
     const loading = useAppSelector((state) => state.group.loading)
@@ -23,7 +23,7 @@ export default function CreateNewUser() {
         }
         setFieldsValid(validationResult)
         if (validationResult.displayName) {
-            dispatch(createNewUser(inputForm, group))
+            dispatch(createNewUser({ user: inputForm, gid: group?.gid ?? null }))
         }
         setFormInfo({ displayName: '' })
     }

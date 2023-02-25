@@ -1,11 +1,14 @@
 import 'reflect-metadata'
 
 import '@picocss/pico'
+import 'styles/global.css'
+
 import { Header } from 'components/header/Header'
 import AppStore from 'components/store'
 import { SessionProvider } from 'next-auth/react'
 import { AppProps } from 'next/app'
 import Head from 'next/head'
+
 
 export default function MyApp({
     Component,
@@ -44,7 +47,9 @@ export default function MyApp({
             <SessionProvider session={session}>
                 <AppStore>
                     <Header />
-                    <Component {...pageProps} />
+                    <div className="container">
+                        <Component {...pageProps} />
+                    </div>
                 </AppStore>
             </SessionProvider>
         </>

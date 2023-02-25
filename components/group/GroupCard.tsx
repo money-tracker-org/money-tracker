@@ -1,5 +1,5 @@
 import { Group } from 'lib/entity/Group'
-import { Pencil } from 'react-bootstrap-icons'
+import { Pencil, PlusCircle } from 'react-bootstrap-icons'
 import styles from './GroupCard.module.css'
 
 interface GroupCardProps {
@@ -21,6 +21,21 @@ export const GroupCard = ({ group, onGroupClick, onGroupEditClick }: GroupCardPr
                 className={styles.editGroupButton}
                 onClick={onGroupEditClick}
             ><Pencil /></button>
+        </article >
+    )
+}
+
+interface AddNewGroupCardProps {
+    onAddNewGroupClick: () => void
+}
+
+export const AddNewGroupCard = ({ onAddNewGroupClick }: AddNewGroupCardProps) => {
+    return (
+        <article className={styles.groupCardContainer}>
+            <button className="outline" onClick={onAddNewGroupClick}>
+                <PlusCircle className={styles.newGroupButtonIcon} />
+                <span className={styles.newGroupButtonText}>New Group</span>
+            </button>
         </article >
     )
 }

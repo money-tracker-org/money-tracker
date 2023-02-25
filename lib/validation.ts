@@ -15,7 +15,7 @@ export async function objectToClass<T extends object>(
     obj: object
 ): Promise<T> {
     const classObject: T = plainToClass(cls, obj)
-    // console.log(`Validating object: ${JSON.stringify(obj)}`)
+    // console.log(`Validating object: ${JSON.stringify(obj, undefined, 2)}`)
     const errors = await validate(classObject, {
         whitelist: true,
         forbidNonWhitelisted: true,
@@ -30,5 +30,6 @@ export async function objectToClass<T extends object>(
             errors
         )
     }
+    // console.log(`Created object: ${JSON.stringify(classObject, undefined, 2)}`)
     return classObject
 }

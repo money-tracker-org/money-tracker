@@ -72,6 +72,7 @@ const getTransaction = async (
     if (transactions === null) {
         return res.status(404).send("Not found!")
     }
+    console.log(`Seleceted transactions: ${JSON.stringify(transactions, undefined, 2)}`)
     return res.status(200).json(transactions)
 }
 

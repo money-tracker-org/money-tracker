@@ -1,19 +1,15 @@
 import { useRouter } from 'next/router';
 import { ArrowLeft } from 'react-bootstrap-icons';
 import { useCurrentGroup } from '../group/CurrentGroup';
-import { setCurrentGroupId } from '../group/groupSlice';
-import { useAppDispatch } from '../store';
 import styles from "./SelectedGroupNav.module.css";
 
 
 
 export const SelectedGroupNav = () => {
     const currentGroup = useCurrentGroup()
-    const dispatch = useAppDispatch()
     const router = useRouter()
 
     const onGroupDeselected = () => {
-        dispatch(setCurrentGroupId(null))
         goToGroups()
     }
 
