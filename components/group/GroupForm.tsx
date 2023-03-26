@@ -1,7 +1,7 @@
 import { useAppDispatch, useAppSelector } from 'components/typedStore'
 import { Group } from 'lib/entity/Group'
 import { User } from 'lib/entity/User'
-import { useState } from 'react'
+import { FormEventHandler, useState } from 'react'
 import { GroupFormUserInput } from './GroupFormUserInput'
 import { createNewGroup } from './groupSlice'
 
@@ -17,7 +17,9 @@ export const GroupForm = () => {
         users: [{ displayName: '' } as User],
     })
 
-    const submitGroup = () => {
+    const submitGroup: FormEventHandler<HTMLFormElement> = (e) => {
+        e.preventDefault()
+        console.log("Creating new group!")
         if (formInfo.name) {
             dispatch(createNewGroup(formInfo))
         }

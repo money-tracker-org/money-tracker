@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { User } from '../../lib/entity/User';
-import { useCurrentGroup } from '../group/CurrentGroup';
-import { createNewUser } from '../group/groupSlice';
+import { createNewUser, useCurrentGroup } from '../group/groupSlice';
 import { useAppDispatch, useAppSelector } from '../typedStore';
 
 export default function CreateNewUser() {

@@ -3,14 +3,14 @@ import { Group } from 'lib/entity/Group'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { AddNewGroupCard, GroupCard } from './GroupCard'
-import { fetchGroups, groupListSelector } from './groupSlice'
+import { fetchRegisteredGroups, groupListSelector } from './groupSlice'
 
 export const GroupList = () => {
     const groups = useAppSelector(groupListSelector)
     const dispatch = useAppDispatch()
     const router = useRouter()
     useEffect(() => {
-        dispatch(fetchGroups())
+        dispatch(fetchRegisteredGroups())
     }, [])
     const onGroupSelected = (g: Group) => {
         router.push(`/${g.gid}/transaction`)
