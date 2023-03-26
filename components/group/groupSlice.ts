@@ -4,7 +4,7 @@ import { createAppAsyncThunk, RootState, useAppDispatch, useAppSelector } from '
 import { Group } from 'lib/entity/Group';
 import { User } from 'lib/entity/User';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { RegisteredGroup } from '../../lib/dto/GroupCollection';
 import { getLocalStorageRegisteredGroups, setLocalStorageRegisteredGroups } from './groupStorage';
 
@@ -46,8 +46,9 @@ export const fetchGroups = createAppAsyncThunk(
 export const fetchRegisteredGroups = createAppAsyncThunk(
     'group/fetchRegistered',
     async (_, thunkAPI) => {
-        const backendUrl = thunkAPI.getState().global.backendUrl
-        const registeredGroups = thunkAPI.getState().group.registeredGroups
+        const state = thunkAPI.getState()
+        const backendUrl = state.global.backendUrl
+        const registeredGroups = state.group.registeredGroups
         return await apiClient.fetchGroupsCollection(registeredGroups, backendUrl)
     },
     {
@@ -81,10 +82,11 @@ export const createNewUser = createAppAsyncThunk<User, {
 export const createNewGroup = createAppAsyncThunk<Group, Partial<Group>>(
     'group/newGroup',
     async (group, thunkAPI) => {
-        const backendUrl = thunkAPI.getState().global.backendUrl
+        const state = thunkAPI.getState()
+        const backendUrl = state.global.backendUrl
         const createdGroup = await apiClient.createNewGroup(group, backendUrl)
 
-        const currentRegisteredGroups = thunkAPI.getState().group.registeredGroups
+        const currentRegisteredGroups = state.group.registeredGroups
         const newRegisteredGroup = { groupId: createdGroup.gid, asUserId: null }
         thunkAPI.dispatch(groupSlice.actions.registerNewGroups([...currentRegisteredGroups, newRegisteredGroup]))
 
@@ -171,9 +173,10 @@ const registeredGroupsSelector = (state: RootState) => state.group.registeredGro
 export const useGroupStorage: () => [RegisteredGroup[], (groups: RegisteredGroup[]) => void] = () => {
     const registeredGroups = useAppSelector(registeredGroupsSelector)
     const dispatch = useAppDispatch()
-    const setRegisteredGroups = (registeredGroups: RegisteredGroup[]) => {
-        dispatch(groupSlice.actions.registerNewGroups(registeredGroups))
-    }
+    const setRegisteredGroups = useCallback((newRegisteredGroups) => {
+        dispatch(groupSlice.actions.registerNewGroups(newRegisteredGroups))
+    }, [dispatch])
+
     return [registeredGroups, setRegisteredGroups]
 }
 
@@ -183,17 +186,19 @@ export const useCurrentGroup = () => {
     const [registeredGroups, setRegisteredGroups] = useGroupStorage()
     const router = useRouter()
     const groupIdFromRouter = router.query.groupId as string
-
+    const groupFromRouter = registeredGroups.find(g => g.groupId === groupIdFromRouter)
     // if a new group is visited, save it to local storage
-    if (registeredGroups.find(g => g.groupId === groupIdFromRouter) === undefined) {
-        console.log(`Registering a new group: ${groupIdFromRouter}`)
-        const newRegisteredGroup = {
-            groupId: groupIdFromRouter,
-            asUserId: null
+    useEffect(() => {
+        if (groupFromRouter === undefined && groupIdFromRouter !== undefined) {
+            console.log(`Registering a new group: ${groupIdFromRouter}`)
+            const newRegisteredGroup = {
+                groupId: groupIdFromRouter,
+                asUserId: null
+            }
+            setRegisteredGroups([...registeredGroups, newRegisteredGroup])
+            dispatch(fetchRegisteredGroups())
         }
-        setRegisteredGroups([...registeredGroups, newRegisteredGroup])
-        dispatch(fetchRegisteredGroups())
-    }
+    }, [registeredGroups, groupIdFromRouter])
 
     useEffect(() => {
         if (allGroups.length === 0) {

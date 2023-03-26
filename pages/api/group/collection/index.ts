@@ -5,21 +5,6 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { DataSource, In } from 'typeorm'
 import { GroupCollection } from '../../../../lib/dto/GroupCollection'
 
-
-type StoredGroupCollection = GroupCollection & { creationTime: Date }
-
-const parseCollectionId = (req: NextApiRequest) => {
-    if (!("collectionId" in req.query) || req.query.collectionId === undefined) {
-        return undefined
-    } else {
-        const collectionIds = req.query.collectionId
-        if (collectionIds.length > 1) {
-            return undefined
-        }
-        return collectionIds.at(0)
-    }
-}
-
 const groupCollection = async (
     req: NextApiRequest,
     res: NextApiResponse<Group[] | string>
